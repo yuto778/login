@@ -1,11 +1,14 @@
-import Login from "@/components/Login";
+import Signup from "@/components/Signup";
+import React from "react";
 
-export default function Home() {
+const Page = () => {
   return (
     <>
       <div className="h-screen w-screen bg-green-400/30 flex flex-col items-center justify-center">
-        <Login />
+        <Signup />
       </div>
     </>
   );
-}
+};
+
+export default Page;
