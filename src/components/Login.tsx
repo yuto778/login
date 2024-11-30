@@ -16,15 +16,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Link from "next/link";
+import { LoginFunction } from "@/action/LoginFunction";
+import { useRouter } from "next/navigation";
 
 const LoginSchema = z.object({
   mailaddress: z.string().email(),
   password: z.string().min(6).max(24),
 });
 
-type LoginFromSchema = z.infer<typeof LoginSchema>;
+export type LoginFromSchema = z.infer<typeof LoginSchema>;
 
 const Login = () => {
+  const router = useRouter();
+
   const Loginform = useForm<LoginFromSchema>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -33,7 +37,14 @@ const Login = () => {
     },
   });
 
-  const onSubmit = async () => {};
+  const onSubmit = async (valeus: LoginFromSchema) => {
+    try {
+      await LoginFunction(valeus);
+      router.push("/dashboard");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>

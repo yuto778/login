@@ -1,21 +1,20 @@
 "use client";
 
-import React from "react";
-
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SignupFunction } from "@/action/test";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const SignupSchema = z.object({
   username: z.string().min(2).max(50),
@@ -24,143 +23,101 @@ const SignupSchema = z.object({
   secondpassword: z.string().min(6).max(24),
 });
 
-type SignupFormSchema = z.infer<typeof SignupSchema>;
+export type SignupFormSchema = z.infer<typeof SignupSchema>;
 
 const Signup = () => {
+  const router = useRouter();
   const Signupform = useForm<SignupFormSchema>({
     resolver: zodResolver(SignupSchema),
     defaultValues: {
       username: "",
+      mailaddress: "",
+      firstpassword: "",
+      secondpassword: "",
     },
   });
 
-  function onSubmit(values: SignupFormSchema) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: SignupFormSchema) {
+    try {
+      if (values.firstpassword === values.secondpassword) {
+        SignupFunction(values);
+        Signupform.reset();
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
     <>
-      <div className=" bg-teal-200 rounded-xl shadow-xl flex flex-col p-10 gap-5 space-y-5">
+      <div className=" bg-teal-200 rounded-xl shadow-xl flex flex-col p-10 gap-5">
         <Form {...Signupform}>
           <form
             onSubmit={Signupform.handleSubmit(onSubmit)}
-            className="space-y-8"
+            className="space-y-5 flex flex-col"
           >
+            <h2 className="text-2xl font-bold">新規登録</h2>
             <FormField
               control={Signupform.control}
               name="username"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
+                <FormItem className="space-y-1">
+                  <FormLabel>ユーザーネーム</FormLabel>
                   <FormControl>
                     <Input placeholder="shadcn" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
-          </form>
-        </Form>
-        <Form {...Signupform}>
-          <form
-            onSubmit={Signupform.handleSubmit(onSubmit)}
-            className="space-y-8"
-          >
             <FormField
               control={Signupform.control}
               name="mailaddress"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
+                <FormItem className="space-y-1">
+                  <FormLabel>メールアドレス</FormLabel>
                   <FormControl>
                     <Input placeholder="shadcn" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
-          </form>
-        </Form>
-        <Form {...Signupform}>
-          <form
-            onSubmit={Signupform.handleSubmit(onSubmit)}
-            className="space-y-8"
-          >
             <FormField
               control={Signupform.control}
               name="firstpassword"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
+                <FormItem className="space-y-1">
+                  <FormLabel>パスワード</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="shadcn" {...field} type="password" />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
-          </form>
-        </Form>
-        <Form {...Signupform}>
-          <form
-            onSubmit={Signupform.handleSubmit(onSubmit)}
-            className="space-y-8"
-          >
-            <FormField
-              control={Signupform.control}
-              name="firstpassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Submit</Button>
-          </form>
-        </Form>
-        <Form {...Signupform}>
-          <form
-            onSubmit={Signupform.handleSubmit(onSubmit)}
-            className="space-y-8"
-          >
             <FormField
               control={Signupform.control}
               name="secondpassword"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
+                <FormItem className="space-y-1">
+                  <FormLabel>確認用パスワード</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="shadcn" {...field} type="password" />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+
+            <Button type="submit" className="self-center">
+              新規登録
+            </Button>
           </form>
         </Form>
       </div>
