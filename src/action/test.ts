@@ -20,7 +20,11 @@ export const SignupFunction = async (value: SignupFormSchema) => {
     // 新しいユーザーが作成された場合、プロフィール情報を追加
     const { error: userError } = await (await supabase)
       .from("profiles")
-      .insert({ mailaddress: value.mailaddress, username: value.username });
+      .insert({
+        id: data.user?.id,
+        mailaddress: value.mailaddress,
+        username: value.username,
+      });
 
     if (userError) {
       console.log("Profile insert error:", userError);
