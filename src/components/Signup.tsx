@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 import { z } from "zod";
 
 const SignupSchema = z.object({
@@ -38,9 +39,14 @@ const Signup = () => {
   });
 
   async function onSubmit(values: SignupFormSchema) {
+    const loadingId = toast.loading("新規登録中");
+
     try {
       if (values.firstpassword === values.secondpassword) {
         SignupFunction(values);
+
+        toast.success("新規登録成功", { id: loadingId });
+
         Signupform.reset();
         router.push("/");
       }
@@ -51,6 +57,7 @@ const Signup = () => {
 
   return (
     <>
+      <Toaster />
       <div className=" bg-teal-200 rounded-xl shadow-xl flex flex-col p-10 gap-5">
         <Form {...Signupform}>
           <form

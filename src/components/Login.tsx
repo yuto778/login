@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { LoginFunction } from "@/action/LoginFunction";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 const LoginSchema = z.object({
   mailaddress: z.string().email(),
@@ -38,16 +39,21 @@ const Login = () => {
   });
 
   const onSubmit = async (valeus: LoginFromSchema) => {
+    const toastId = toast.loading("ログイン中");
+
     try {
       await LoginFunction(valeus);
+      toast.success("ログイン成功🚀", { id: toastId });
       router.push("/dashboard");
     } catch (error) {
+      toast.error("失敗しました", { id: toastId });
       console.log(error);
     }
   };
 
   return (
     <>
+      <Toaster />
       <div className=" bg-teal-200 rounded-xl shadow-xl flex flex-col p-10 gap-5 space-y-5">
         <h2 className="text-xl font-bold">ログインフォーム</h2>
         <Form {...Loginform}>
